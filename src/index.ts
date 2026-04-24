@@ -1,8 +1,8 @@
-export { createClient } from "./client.js";
-export { PcloudApiError, PcloudNetworkError } from "./errors.js";
+export { createClient } from "./client";
+export { PcloudApiError, PcloudNetworkError } from "./errors";
 
-export type { Client, ClientContext } from "./client.js";
-export type { PcloudMethodName } from "./constants/methods.js";
+export type { Client, ClientContext } from "./client";
+export type { PcloudMethodName } from "./constants/methods";
 export type {
   FileMetadata,
   FolderMetadata,
@@ -14,7 +14,7 @@ export type {
   Checksums,
   FileLocal,
   SharePermissions,
-} from "./types/api.js";
+} from "./types/api";
 export type {
   ListFolderOptions,
   UploadOptions,
@@ -23,5 +23,5 @@ export type {
   ThumbOptions,
   RegisterOptions,
   CallOptions,
-} from "./types/options.js";
-export type { Progress, ProgressCallback } from "./types/progress.js";
+} from "./types/options";
+export type { Progress, ProgressCallback } from "./types/progress";

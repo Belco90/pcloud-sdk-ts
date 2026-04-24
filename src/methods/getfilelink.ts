@@ -1,4 +1,4 @@
-import type { ClientContext } from "../client.js";
+import type { ClientContext } from "../client";
 
 export function getfilelink(ctx: ClientContext) {
   return async (fileid: number): Promise<string> => {

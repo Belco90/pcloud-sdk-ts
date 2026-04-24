@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from "vitest";
-import { createClient } from "../../../src/client.js";
-import { apiOk, mockFetch, FILE } from "../../fixtures/responses.js";
+import { createClient } from "../../../src/client";
+import { apiOk, mockFetch, FILE } from "../../fixtures/responses";
 
 describe("upload", () => {
   it("returns metadata and checksums", async () => {

@@ -1,4 +1,4 @@
-import type { Progress, ProgressCallback } from "../types/progress.js";
+import type { Progress, ProgressCallback } from "../types/progress";
 
 export function makeProgressStream(
   onProgress: ProgressCallback,

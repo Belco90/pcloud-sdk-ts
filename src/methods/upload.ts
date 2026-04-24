@@ -1,7 +1,7 @@
-import type { ClientContext } from "../client.js";
-import type { FileMetadata, Checksums } from "../types/api.js";
-import type { UploadOptions } from "../types/options.js";
-import { assert } from "../util/assert.js";
+import type { ClientContext } from "../client";
+import type { FileMetadata, Checksums } from "../types/api";
+import type { UploadOptions } from "../types/options";
+import { assert } from "../util/assert";
 
 export function upload(ctx: ClientContext) {
   return async (
@@ -29,7 +29,7 @@ export function upload(ctx: ClientContext) {
     const form = new FormData();
     form.append("file", blob, filename);
 
-    const callOpts: import("../types/options.js").CallOptions = {
+    const callOpts: import("../types/options").CallOptions = {
       method: "POST",
       body: form,
       ...(options.onProgress ? { onProgress: options.onProgress } : {}),

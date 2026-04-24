@@ -1,9 +1,9 @@
-import { PcloudApiError, PcloudNetworkError } from "../errors.js";
-import { isReadMethod } from "../constants/methods.js";
-import { buildUrl } from "./url.js";
-import { coalesce, coalesceKey } from "./coalesce.js";
-import { makeProgressStream } from "./progress.js";
-import type { CallOptions } from "../types/options.js";
+import { PcloudApiError, PcloudNetworkError } from "../errors";
+import { isReadMethod } from "../constants/methods";
+import { buildUrl } from "./url";
+import { coalesce, coalesceKey } from "./coalesce";
+import { makeProgressStream } from "./progress";
+import type { CallOptions } from "../types/options";
 
 type Primitive = string | number | boolean;
 

@@ -1,5 +1,5 @@
-import type { ClientContext } from "../client.js";
-import type { FolderMetadata } from "../types/api.js";
+import type { ClientContext } from "../client";
+import type { FolderMetadata } from "../types/api";
 
 export function createfolder(ctx: ClientContext) {
   return async (name: string, parentfolderid: number = 0): Promise<FolderMetadata> => {

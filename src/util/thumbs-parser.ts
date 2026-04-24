@@ -1,4 +1,4 @@
-import type { ThumbResult } from "../types/api.js";
+import type { ThumbResult } from "../types/api";
 
 const THUMB_FILEID = 0;
 const THUMB_RESULT = 1;

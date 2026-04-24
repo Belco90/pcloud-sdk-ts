@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { coalesce, coalesceKey } from "../../../src/transport/coalesce.js";
+import { coalesce, coalesceKey } from "../../../src/transport/coalesce";
 
 describe("coalesce", () => {
   it("returns the same promise for concurrent identical keys", async () => {

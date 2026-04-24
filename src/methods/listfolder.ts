@@ -1,6 +1,6 @@
-import type { ClientContext } from "../client.js";
-import type { FolderMetadata } from "../types/api.js";
-import type { ListFolderOptions } from "../types/options.js";
+import type { ClientContext } from "../client";
+import type { FolderMetadata } from "../types/api";
+import type { ListFolderOptions } from "../types/options";
 
 export function listfolder(ctx: ClientContext) {
   return async (folderid: number = 0, options: ListFolderOptions = {}): Promise<FolderMetadata> => {

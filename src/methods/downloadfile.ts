@@ -1,8 +1,8 @@
-import type { ClientContext } from "../client.js";
-import type { FileLocal } from "../types/api.js";
-import type { DownloadOptions } from "../types/options.js";
-import { makeProgressStream } from "../transport/progress.js";
-import { assert } from "../util/assert.js";
+import type { ClientContext } from "../client";
+import type { FileLocal } from "../types/api";
+import type { DownloadOptions } from "../types/options";
+import { makeProgressStream } from "../transport/progress";
+import { assert } from "../util/assert";
 
 export function downloadfile(ctx: ClientContext) {
   return async (

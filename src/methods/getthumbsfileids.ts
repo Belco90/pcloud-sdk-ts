@@ -1,8 +1,8 @@
-import type { ClientContext } from "../client.js";
-import type { ThumbResult } from "../types/api.js";
-import type { ThumbOptions } from "../types/options.js";
-import { createThumbParser } from "../util/thumbs-parser.js";
-import { assert } from "../util/assert.js";
+import type { ClientContext } from "../client";
+import type { ThumbResult } from "../types/api";
+import type { ThumbOptions } from "../types/options";
+import { createThumbParser } from "../util/thumbs-parser";
+import { assert } from "../util/assert";
 
 export function getthumbsfileids(ctx: ClientContext) {
   return async (

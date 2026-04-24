@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from "vitest";
-import { createClient } from "../../../src/client.js";
-import { apiOk, mockFetch, FOLDER } from "../../fixtures/responses.js";
+import { createClient } from "../../../src/client";
+import { apiOk, mockFetch, FOLDER } from "../../fixtures/responses";
 
 describe("listfolder", () => {
   it("returns folder metadata", async () => {

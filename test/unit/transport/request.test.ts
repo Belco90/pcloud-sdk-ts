@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { apiRequest } from "../../../src/transport/request.js";
-import { PcloudApiError, PcloudNetworkError } from "../../../src/errors.js";
-import { mockFetch, apiOk, apiErr } from "../../fixtures/responses.js";
+import { apiRequest } from "../../../src/transport/request";
+import { PcloudApiError, PcloudNetworkError } from "../../../src/errors";
+import { mockFetch, apiOk, apiErr } from "../../fixtures/responses";
 
 beforeEach(() => {
   vi.restoreAllMocks();

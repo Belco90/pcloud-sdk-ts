@@ -1,5 +1,5 @@
-import { apiRequest } from "./transport/request.js";
-import { assert } from "./util/assert.js";
+import { apiRequest } from "./transport/request";
+import { assert } from "./util/assert";
 
 interface AuthorizeUrlOptions {
   clientId: string;

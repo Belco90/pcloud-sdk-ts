@@ -1,5 +1,5 @@
-import type { DownloadOptions } from "../types/options.js";
-import { makeProgressStream } from "../transport/progress.js";
+import type { DownloadOptions } from "../types/options";
+import { makeProgressStream } from "../transport/progress";
 
 export function download() {
   return async (

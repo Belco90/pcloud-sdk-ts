@@ -1,4 +1,4 @@
-import type { FolderMetadata, FileMetadata, UserInfo } from "../../src/types/api.js";
+import type { FolderMetadata, FileMetadata, UserInfo } from "../../src/types/api";
 
 export const FOLDER: FolderMetadata = {
   folderid: 0,

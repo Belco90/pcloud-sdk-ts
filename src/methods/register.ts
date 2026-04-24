@@ -1,5 +1,5 @@
-import type { ClientContext } from "../client.js";
-import type { RegisterOptions } from "../types/options.js";
+import type { ClientContext } from "../client";
+import type { RegisterOptions } from "../types/options";
 
 export function register(ctx: ClientContext) {
   return async (

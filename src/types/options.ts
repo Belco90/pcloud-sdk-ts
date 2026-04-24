@@ -1,5 +1,5 @@
-import type { ProgressCallback } from "./progress.js";
-import type { RemoteUploadProgress } from "./api.js";
+import type { ProgressCallback } from "./progress";
+import type { RemoteUploadProgress } from "./api";
 
 export interface CreateClientOptions {
   token: string;

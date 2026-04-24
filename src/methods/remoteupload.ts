@@ -1,7 +1,7 @@
-import type { ClientContext } from "../client.js";
-import type { FileMetadata, RemoteUploadProgress } from "../types/api.js";
-import type { RemoteUploadOptions } from "../types/options.js";
-import { assert } from "../util/assert.js";
+import type { ClientContext } from "../client";
+import type { FileMetadata, RemoteUploadProgress } from "../types/api";
+import type { RemoteUploadOptions } from "../types/options";
+import { assert } from "../util/assert";
 
 export function remoteupload(ctx: ClientContext) {
   return async (

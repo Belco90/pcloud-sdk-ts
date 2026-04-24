@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { PcloudApiError, PcloudNetworkError } from "../../src/errors.js";
+import { PcloudApiError, PcloudNetworkError } from "../../src/errors";
 
 describe("PcloudApiError", () => {
   it("is an instance of Error", () => {

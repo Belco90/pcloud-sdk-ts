@@ -1,5 +1,5 @@
-import type { ClientContext } from "../client.js";
-import type { ShareInfo, SharePermissions } from "../types/api.js";
+import type { ClientContext } from "../client";
+import type { ShareInfo, SharePermissions } from "../types/api";
 
 export function sharefolder(ctx: ClientContext) {
   return async (

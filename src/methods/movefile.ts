@@ -1,5 +1,5 @@
-import type { ClientContext } from "../client.js";
-import type { FileMetadata } from "../types/api.js";
+import type { ClientContext } from "../client";
+import type { FileMetadata } from "../types/api";
 
 export function movefile(ctx: ClientContext) {
   return async (fileid: number, tofolderid: number): Promise<FileMetadata> => {

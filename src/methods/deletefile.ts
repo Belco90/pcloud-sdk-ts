@@ -1,5 +1,5 @@
-import type { ClientContext } from "../client.js";
-import type { FileMetadata } from "../types/api.js";
+import type { ClientContext } from "../client";
+import type { FileMetadata } from "../types/api";
 
 export function deletefile(ctx: ClientContext) {
   return async (fileid: number): Promise<FileMetadata> => {

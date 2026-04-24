@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { buildUrl } from "../../../src/transport/url.js";
+import { buildUrl } from "../../../src/transport/url";
 
 describe("buildUrl", () => {
   it("builds a basic URL without params", () => {

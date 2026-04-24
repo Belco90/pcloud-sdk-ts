@@ -1,11 +1,11 @@
-import { PcloudNetworkError } from "./errors.js";
-import { isAuthMethod } from "./constants/methods.js";
-import { DEFAULT_API_SERVER, FALLBACK_API_SERVER } from "./constants/servers.js";
-import { apiRequest } from "./transport/request.js";
-import * as methods from "./methods/index.js";
-import { assert } from "./util/assert.js";
+import { PcloudNetworkError } from "./errors";
+import { isAuthMethod } from "./constants/methods";
+import { DEFAULT_API_SERVER, FALLBACK_API_SERVER } from "./constants/servers";
+import { apiRequest } from "./transport/request";
+import * as methods from "./methods/index";
+import { assert } from "./util/assert";
 
-import type { PcloudMethodName } from "./constants/methods.js";
+import type { PcloudMethodName } from "./constants/methods";
 import type {
   CallOptions,
   CreateClientOptions,
@@ -15,7 +15,7 @@ import type {
   RemoteUploadOptions,
   ThumbOptions,
   UploadOptions,
-} from "./types/options.js";
+} from "./types/options";
 import type {
   AppShareInfo,
   Checksums,
@@ -26,7 +26,7 @@ import type {
   SharePermissions,
   ThumbResult,
   UserInfo,
-} from "./types/api.js";
+} from "./types/api";
 
 type Primitive = string | number | boolean;
 
