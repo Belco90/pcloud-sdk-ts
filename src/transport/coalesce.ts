@@ -9,10 +9,14 @@ export function coalesce<T>(key: string, exec: () => Promise<T>): Promise<T> {
 	return p
 }
 
-export function coalesceKey(method: string, params: Record<string, string>): string {
+export function coalesceKey(
+	method: string,
+	params: Record<string, string>,
+	scope?: string,
+): string {
 	const sorted = Object.entries(params)
 		.toSorted(([a], [b]) => a.localeCompare(b))
 		.map(([k, v]) => `${k}=${v}`)
 		.join('&')
-	return `${method}?${sorted}`
+	return `${scope ?? ''}|${method}?${sorted}`
 }

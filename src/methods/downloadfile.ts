@@ -4,6 +4,7 @@ import type { DownloadOptions } from '../types/options'
 
 import { makeProgressStream } from '../transport/progress'
 import { assert } from '../util/assert'
+import { sanitizeUrlString } from '../util/sanitize'
 
 export function downloadfile(ctx: ClientContext) {
 	return async (
@@ -22,7 +23,14 @@ export function downloadfile(ctx: ClientContext) {
 		try {
 			res = await fetch(url)
 		} catch (err) {
-			throw new TypeError(`downloadfile: fetch failed — ${(err as Error).message}`, { cause: err })
+			// The signed URL contains a short-lived download code; scrub it from
+			// the error message and replace the raw cause with a sanitized wrapper.
+			const inner = err instanceof Error ? err : new Error(String(err))
+			const safeMessage = sanitizeUrlString(inner.message)
+			// oxlint-disable-next-line eslint/preserve-caught-error
+			throw new TypeError(`downloadfile: fetch failed — ${safeMessage}`, {
+				cause: { name: inner.name, message: safeMessage },
+			})
 		}
 
 		assert(res.ok && res.body !== null, `downloadfile: HTTP ${res.status} ${res.statusText}`)

@@ -2,16 +2,21 @@ import type { CallOptions } from '../types/options'
 
 import { isReadMethod } from '../constants/methods'
 import { PcloudApiError, PcloudNetworkError } from '../errors'
+import { sanitizeUrlString } from '../util/sanitize'
 import { coalesce, coalesceKey } from './coalesce'
 import { makeProgressStream } from './progress'
 import { buildUrl } from './url'
 
 type Primitive = string | number | boolean
 
+export type AuthEntry = ['access_token' | 'auth', string]
+
 export interface RequestParams {
 	params?: Record<string, Primitive | undefined>
+	auth?: AuthEntry
 	body?: BodyInit
 	noCoalesce?: boolean
+	coalesceScope?: string
 }
 
 function makeFetchInit(
@@ -23,6 +28,17 @@ function makeFetchInit(
 	if (body !== undefined) init.body = body
 	if (signal !== undefined) init.signal = signal
 	return init
+}
+
+function wrapFetchError(method: string, err: unknown): PcloudNetworkError {
+	// The original fetch error can embed the request URL (with the auth token
+	// as a query param) in its message — undici does this for TLS/connection
+	// failures. We deliberately replace `cause` with a sanitized copy instead
+	// of forwarding the raw error; preserve-caught-error does not apply.
+	const inner = err instanceof Error ? err : new Error(String(err))
+	const safeMessage = sanitizeUrlString(inner.message)
+	const safeCause = { name: inner.name, message: safeMessage }
+	return new PcloudNetworkError(method, safeMessage, undefined, safeCause)
 }
 
 async function parseJsonResponse<T>(
@@ -50,7 +66,16 @@ export async function apiRequest<T>(
 	method: string,
 	options: CallOptions & RequestParams = {},
 ): Promise<T> {
-	const { params, body, signal, onProgress, responseType = 'json', noCoalesce = false } = options
+	const {
+		params,
+		auth,
+		body,
+		signal,
+		onProgress,
+		responseType = 'json',
+		noCoalesce = false,
+		coalesceScope,
+	} = options
 	const verb = options.method ?? (body ? 'POST' : 'GET')
 
 	const urlParams: Record<string, string> = {}
@@ -60,7 +85,8 @@ export async function apiRequest<T>(
 		}
 	}
 
-	const url = buildUrl(apiServer, method, urlParams)
+	const urlParamsWithAuth = auth ? { ...urlParams, [auth[0]]: auth[1] } : urlParams
+	const url = buildUrl(apiServer, method, urlParamsWithAuth)
 	const init = makeFetchInit(verb, body, signal)
 
 	const run = async (): Promise<T> => {
@@ -68,7 +94,7 @@ export async function apiRequest<T>(
 		try {
 			res = await fetch(url, init)
 		} catch (err) {
-			throw new PcloudNetworkError(method, (err as Error).message, undefined, err)
+			throw wrapFetchError(method, err)
 		}
 
 		if (!res.ok) throw new PcloudNetworkError(method, res.statusText, res.status)
@@ -86,7 +112,7 @@ export async function apiRequest<T>(
 				try {
 					res = await fetch(url, init)
 				} catch (err) {
-					throw new PcloudNetworkError(method, (err as Error).message, undefined, err)
+					throw wrapFetchError(method, err)
 				}
 
 				if (!res.ok) throw new PcloudNetworkError(method, res.statusText, res.status)
@@ -107,7 +133,7 @@ export async function apiRequest<T>(
 	const executor = trackingRun ?? run
 
 	if (!noCoalesce && verb === 'GET' && isReadMethod(method)) {
-		return coalesce(coalesceKey(method, urlParams), executor)
+		return coalesce(coalesceKey(method, urlParams, coalesceScope), executor)
 	}
 
 	return executor()

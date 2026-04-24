@@ -6,16 +6,16 @@ A modern alternative to [`pcloud-sdk-js`](https://www.npmjs.com/package/pcloud-s
 
 ## Why
 
-| | `pcloud-sdk-js` | `pcloud-sdk` |
-|---|---|---|
-| Runtime deps | `isomorphic-fetch`, `form-data`, `invariant` | none |
-| TypeScript | untyped JS | strict, `exactOptionalPropertyTypes` |
-| Module format | CJS | ESM only, `sideEffects: false` |
-| Progress | XHR events | stream-based byte counts |
-| Errors | raw rejected JSON | typed `PcloudApiError` / `PcloudNetworkError` |
-| API style | callback or promise | promise only |
-| Environments | Node + browser | Node + browser (platform-neutral build) |
-| EU/US failover | manual | automatic on 5xx |
+|                | `pcloud-sdk-js`                              | `pcloud-sdk`                                  |
+| -------------- | -------------------------------------------- | --------------------------------------------- |
+| Runtime deps   | `isomorphic-fetch`, `form-data`, `invariant` | none                                          |
+| TypeScript     | untyped JS                                   | strict, `exactOptionalPropertyTypes`          |
+| Module format  | CJS                                          | ESM only, `sideEffects: false`                |
+| Progress       | XHR events                                   | stream-based byte counts                      |
+| Errors         | raw rejected JSON                            | typed `PcloudApiError` / `PcloudNetworkError` |
+| API style      | callback or promise                          | promise only                                  |
+| Environments   | Node + browser                               | Node + browser (platform-neutral build)       |
+| EU/US failover | manual                                       | automatic on 5xx                              |
 
 ## Requirements
 
@@ -38,8 +38,8 @@ const client = createClient({ token: process.env.PCLOUD_TOKEN! })
 
 const root = await client.listfolder(0)
 for (const entry of root.contents ?? []) {
-  // TypeScript narrows entry to FolderMetadata | FileMetadata via isfolder
-  console.log(entry.isfolder ? '[dir]' : '[file]', entry.name)
+	// TypeScript narrows entry to FolderMetadata | FileMetadata via isfolder
+	console.log(entry.isfolder ? '[dir]' : '[file]', entry.name)
 }
 ```
 
@@ -52,16 +52,16 @@ import { buildAuthorizeUrl, getTokenFromCode } from 'pcloud-sdk/oauth'
 
 // Step 1: redirect the user to pCloud's consent screen
 const url = buildAuthorizeUrl({
-  clientId: process.env.PCLOUD_CLIENT_ID!,
-  redirectUri: 'https://example.com/callback',
-  responseType: 'code',
+	clientId: process.env.PCLOUD_CLIENT_ID!,
+	redirectUri: 'https://example.com/callback',
+	responseType: 'code',
 })
 
 // Step 2: in your callback handler, exchange the code for an access token
 const { access_token, locationid } = await getTokenFromCode(
-  code,
-  process.env.PCLOUD_CLIENT_ID!,
-  process.env.PCLOUD_APP_SECRET!,
+	code,
+	process.env.PCLOUD_CLIENT_ID!,
+	process.env.PCLOUD_APP_SECRET!,
 )
 
 const client = createClient({ token: access_token })
@@ -74,11 +74,11 @@ import { initOauthToken, popup } from 'pcloud-sdk/oauth-browser'
 
 // On the main page: opens a popup and wires the callback
 initOauthToken({
-  clientId: 'YOUR_CLIENT_ID',
-  redirectUri: 'https://example.com/oauth-callback',
-  receiveToken: (token, locationid) => {
-    const client = createClient({ token })
-  },
+	clientId: 'YOUR_CLIENT_ID',
+	redirectUri: 'https://example.com/oauth-callback',
+	receiveToken: (token, locationid) => {
+		const client = createClient({ token })
+	},
 })
 
 // On the redirectUri page: reads the token from the URL and passes it back
@@ -91,9 +91,13 @@ For environments where a redirect URI is impractical, `initOauthPollToken` uses 
 import { initOauthPollToken } from 'pcloud-sdk/oauth-browser'
 
 initOauthPollToken({
-  clientId: 'YOUR_CLIENT_ID',
-  receiveToken: (token, locationid) => { /* … */ },
-  onError: (err) => { /* … */ },
+	clientId: 'YOUR_CLIENT_ID',
+	receiveToken: (token, locationid) => {
+		/* … */
+	},
+	onError: (err) => {
+		/* … */
+	},
 })
 ```
 
@@ -111,36 +115,36 @@ const client = createClient({ token: sessionToken, type: 'pcloud' })
 
 These are fully typed and bound directly on the client:
 
-| Method | Signature | Returns |
-|--------|-----------|---------|
-| `userinfo` | `()` | `Promise<UserInfo>` |
-| `listfolder` | `(folderid?: number, options?: ListFolderOptions)` | `Promise<FolderMetadata>` |
-| `createfolder` | `(name: string, parentfolderid?: number)` | `Promise<FolderMetadata>` |
-| `deletefile` | `(fileid: number)` | `Promise<FileMetadata>` |
-| `deletefolder` | `(folderid: number, recursive?: boolean)` | `Promise<FolderMetadata>` |
-| `movefile` | `(fileid: number, tofolderid: number)` | `Promise<FileMetadata>` |
-| `movefolder` | `(folderid: number, tofolderid: number)` | `Promise<FolderMetadata>` |
-| `renamefile` | `(fileid: number, toname: string)` | `Promise<FileMetadata>` |
-| `renamefolder` | `(folderid: number, toname: string)` | `Promise<FolderMetadata>` |
-| `getfilelink` | `(fileid: number)` | `Promise<string>` |
-| `sharefolder` | `(folderid: number, mail: string, permissions: 'view' \| 'edit', message?: string)` | `Promise<ShareInfo>` |
-| `appshare` | `(folderid: number, userid: number, clientid: string)` | `Promise<AppShareInfo>` |
-| `login` | `(params?: Record<string, string>)` | `Promise<UserInfo>` |
-| `register` | `(email: string, password: string, options?: RegisterOptions)` | `Promise<number>` |
-| `upload` | `(source: string \| Blob \| File, folderid?: number, options?: UploadOptions)` | `Promise<{ metadata: FileMetadata; checksums: Checksums }>` |
-| `download` | `(url: string, options?: DownloadOptions)` | `Promise<ReadableStream<Uint8Array>>` |
-| `downloadfile` | `(fileid: number, destination: string \| WritableStream<Uint8Array>, options?: DownloadOptions)` | `Promise<FileLocal>` |
-| `remoteupload` | `(url: string, folderid?: number, options?: RemoteUploadOptions)` | `Promise<{ metadata: FileMetadata }>` |
-| `getthumbsfileids` | `(fileids: number[], receiveThumb: (thumb: ThumbResult) => void, options?: ThumbOptions)` | `Promise<ThumbResult[]>` |
+| Method             | Signature                                                                                        | Returns                                                     |
+| ------------------ | ------------------------------------------------------------------------------------------------ | ----------------------------------------------------------- |
+| `userinfo`         | `()`                                                                                             | `Promise<UserInfo>`                                         |
+| `listfolder`       | `(folderid?: number, options?: ListFolderOptions)`                                               | `Promise<FolderMetadata>`                                   |
+| `createfolder`     | `(name: string, parentfolderid?: number)`                                                        | `Promise<FolderMetadata>`                                   |
+| `deletefile`       | `(fileid: number)`                                                                               | `Promise<FileMetadata>`                                     |
+| `deletefolder`     | `(folderid: number, recursive?: boolean)`                                                        | `Promise<FolderMetadata>`                                   |
+| `movefile`         | `(fileid: number, tofolderid: number)`                                                           | `Promise<FileMetadata>`                                     |
+| `movefolder`       | `(folderid: number, tofolderid: number)`                                                         | `Promise<FolderMetadata>`                                   |
+| `renamefile`       | `(fileid: number, toname: string)`                                                               | `Promise<FileMetadata>`                                     |
+| `renamefolder`     | `(folderid: number, toname: string)`                                                             | `Promise<FolderMetadata>`                                   |
+| `getfilelink`      | `(fileid: number)`                                                                               | `Promise<string>`                                           |
+| `sharefolder`      | `(folderid: number, mail: string, permissions: 'view' \| 'edit', message?: string)`              | `Promise<ShareInfo>`                                        |
+| `appshare`         | `(folderid: number, userid: number, clientid: string)`                                           | `Promise<AppShareInfo>`                                     |
+| `login`            | `(params?: Record<string, string>)`                                                              | `Promise<UserInfo>`                                         |
+| `register`         | `(email: string, password: string, options?: RegisterOptions)`                                   | `Promise<number>`                                           |
+| `upload`           | `(source: string \| Blob \| File, folderid?: number, options?: UploadOptions)`                   | `Promise<{ metadata: FileMetadata; checksums: Checksums }>` |
+| `download`         | `(url: string, options?: DownloadOptions)`                                                       | `Promise<ReadableStream<Uint8Array>>`                       |
+| `downloadfile`     | `(fileid: number, destination: string \| WritableStream<Uint8Array>, options?: DownloadOptions)` | `Promise<FileLocal>`                                        |
+| `remoteupload`     | `(url: string, folderid?: number, options?: RemoteUploadOptions)`                                | `Promise<{ metadata: FileMetadata }>`                       |
+| `getthumbsfileids` | `(fileids: number[], receiveThumb: (thumb: ThumbResult) => void, options?: ThumbOptions)`        | `Promise<ThumbResult[]>`                                    |
 
 ## Uploads
 
 ```ts
 // From a Blob or File (browser or Node)
 const { metadata, checksums } = await client.upload(new Blob(['hello']), folderId, {
-  onBegin: () => console.log('starting'),
-  onProgress: ({ loaded, total }) => console.log(loaded, '/', total),
-  onFinish: () => console.log('done'),
+	onBegin: () => console.log('starting'),
+	onProgress: ({ loaded, total }) => console.log(loaded, '/', total),
+	onFinish: () => console.log('done'),
 })
 
 // From a filesystem path (Node only)
@@ -148,7 +152,7 @@ await client.upload('/path/to/video.mp4', folderId)
 
 // Remote URL — pCloud fetches it server-side, progress is polled automatically
 await client.remoteupload('https://example.com/archive.zip', folderId, {
-  onProgress: ({ all }) => console.log(all.downloaded, '/', all.size),
+	onProgress: ({ all }) => console.log(all.downloaded, '/', all.size),
 })
 ```
 
@@ -162,7 +166,9 @@ const { path, bytes } = await client.downloadfile(fileId, '/tmp/out.bin')
 
 // Download to any WritableStream (browser or Node)
 await client.downloadfile(fileId, writableStream, {
-  onProgress: ({ loaded, total }) => { /* … */ },
+	onProgress: ({ loaded, total }) => {
+		/* … */
+	},
 })
 
 // Get a raw ReadableStream to pipe or consume yourself
@@ -176,15 +182,21 @@ const stream = await client.download(url)
 import { PcloudApiError, PcloudNetworkError } from 'pcloud-sdk'
 
 try {
-  await client.listfolder(0)
+	await client.listfolder(0)
 } catch (err) {
-  if (err instanceof PcloudApiError) {
-    // pCloud returned a non-zero result code
-    console.error(err.result, err.method, err.params)
-  } else if (err instanceof PcloudNetworkError) {
-    // fetch itself failed (timeout, DNS, etc.)
-    console.error(err.status, err.cause)
-  }
+	if (err instanceof PcloudApiError) {
+		// pCloud returned a non-zero result code.
+		// `err.params` echoes the method's input params with secret keys
+		// (access_token, auth, client_secret, password) stripped, so it's safe to log.
+		console.error(err.result, err.method, err.params)
+	} else if (err instanceof PcloudNetworkError) {
+		// fetch itself failed (timeout, DNS, etc.). The underlying fetch URL
+		// may include the auth token as a query param, so `err.message` and
+		// `err.cause.message` are scrubbed: values of known secret keys are
+		// replaced with `***`. `err.cause` is a plain `{ name, message }`
+		// object (not the raw fetch error) to prevent incidental leaks.
+		console.error(err.status, err.cause)
+	}
 }
 ```
 
@@ -215,11 +227,11 @@ See the [pCloud HTTP API docs](https://docs.pcloud.com/) for the full method lis
 
 ```ts
 const client = createClient({
-  token,
-  type: 'oauth',               // 'oauth' (default) | 'pcloud'
-  apiServer: 'eapi.pcloud.com', // default EU server; 'api.pcloud.com' for US
-  useProxy: true,               // auto-detect nearest server via getapiserver on init
-  coalesceReads: false,         // disable in-flight deduplication of identical GET reads
+	token,
+	type: 'oauth', // 'oauth' (default) | 'pcloud'
+	apiServer: 'eapi.pcloud.com', // default EU server; 'api.pcloud.com' for US
+	useProxy: true, // auto-detect nearest server via getapiserver on init
+	coalesceReads: false, // disable in-flight deduplication of identical GET reads
 })
 
 // Swap the token on an existing client (e.g. after token refresh)
@@ -253,11 +265,11 @@ The method name and promise shape are identical. You now get discriminated union
 const folder = await client.listfolder(0, { recursive: true })
 
 for (const entry of folder.contents ?? []) {
-  if (entry.isfolder) {
-    entry.folderid // FolderMetadata — TypeScript knows this
-  } else {
-    entry.fileid   // FileMetadata — TypeScript knows this
-  }
+	if (entry.isfolder) {
+		entry.folderid // FolderMetadata — TypeScript knows this
+	} else {
+		entry.fileid // FileMetadata — TypeScript knows this
+	}
 }
 ```
 
@@ -269,7 +281,7 @@ client.upload(file, folderId, { onProgress: (event) => event.loaded / event.tota
 
 // After — stream-based byte counts
 client.upload(file, folderId, {
-  onProgress: ({ loaded, total }) => loaded / (total ?? Infinity),
+	onProgress: ({ loaded, total }) => loaded / (total ?? Infinity),
 })
 ```
 

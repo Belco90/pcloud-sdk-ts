@@ -3,6 +3,7 @@ import type { FileMetadata, RemoteUploadProgress } from '../types/api'
 import type { RemoteUploadOptions } from '../types/options'
 
 import { assert } from '../util/assert'
+import { randomString } from '../util/random'
 
 export function remoteupload(ctx: ClientContext) {
 	return async (
@@ -14,7 +15,7 @@ export function remoteupload(ctx: ClientContext) {
 
 		options.onBegin?.()
 
-		const progresshash = `pcloud-sdk-${Date.now()}-${Math.random().toString(36).slice(2)}`
+		const progresshash = `pcloud-sdk-${Date.now()}-${randomString(16)}`
 
 		let stopPoll = false
 		let pollTimer: ReturnType<typeof setTimeout> | undefined

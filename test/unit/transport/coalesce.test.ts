@@ -50,4 +50,16 @@ describe('coalesceKey', () => {
 		const k = coalesceKey('listfolder', {})
 		expect(k).toContain('listfolder')
 	})
+
+	it('produces different keys when scope differs', () => {
+		const k1 = coalesceKey('listfolder', { folderid: '0' }, 'client-a')
+		const k2 = coalesceKey('listfolder', { folderid: '0' }, 'client-b')
+		expect(k1).not.toBe(k2)
+	})
+
+	it('produces the same key for the same scope and params', () => {
+		const k1 = coalesceKey('listfolder', { folderid: '0' }, 'client-a')
+		const k2 = coalesceKey('listfolder', { folderid: '0' }, 'client-a')
+		expect(k1).toBe(k2)
+	})
 })

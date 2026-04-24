@@ -1,6 +1,7 @@
 import type { DownloadOptions } from '../types/options'
 
 import { makeProgressStream } from '../transport/progress'
+import { sanitizeUrlString } from '../util/sanitize'
 
 export function download() {
 	return async (
@@ -13,7 +14,14 @@ export function download() {
 		try {
 			res = await fetch(url)
 		} catch (err) {
-			throw new TypeError(`download: fetch failed — ${(err as Error).message}`, { cause: err })
+			// Scrub tokens that undici may have embedded in the fetch error message;
+			// cause is replaced with a sanitized wrapper by design.
+			const inner = err instanceof Error ? err : new Error(String(err))
+			const safeMessage = sanitizeUrlString(inner.message)
+			// oxlint-disable-next-line eslint/preserve-caught-error
+			throw new TypeError(`download: fetch failed — ${safeMessage}`, {
+				cause: { name: inner.name, message: safeMessage },
+			})
 		}
 
 		if (!res.ok || !res.body) {

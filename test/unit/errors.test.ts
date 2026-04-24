@@ -27,6 +27,31 @@ describe('PcloudApiError', () => {
 		const err = new PcloudApiError(2005, 'File not found', 'getfilelink')
 		expect(err.params).toBeUndefined()
 	})
+
+	it('strips secret keys from params', () => {
+		const err = new PcloudApiError(2005, 'File not found', 'listfolder', {
+			folderid: '0',
+			access_token: 'SECRET-OAUTH',
+			auth: 'SECRET-PCLOUD',
+			client_secret: 'SECRET-APP',
+			password: 'SECRET-PASS',
+		})
+		expect(err.params).toEqual({ folderid: '0' })
+		expect(err.params).not.toHaveProperty('access_token')
+		expect(err.params).not.toHaveProperty('auth')
+		expect(err.params).not.toHaveProperty('client_secret')
+		expect(err.params).not.toHaveProperty('password')
+	})
+
+	it('does not leak secrets in message or JSON representation', () => {
+		const err = new PcloudApiError(2005, 'File not found', 'listfolder', {
+			access_token: 'SECRET-OAUTH',
+		})
+		expect(err.message).not.toContain('SECRET-OAUTH')
+		expect(JSON.stringify({ ...err, message: err.message, params: err.params })).not.toContain(
+			'SECRET-OAUTH',
+		)
+	})
 })
 
 describe('PcloudNetworkError', () => {

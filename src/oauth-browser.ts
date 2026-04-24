@@ -1,5 +1,6 @@
 import { apiRequest } from './transport/request'
 import { assert } from './util/assert'
+import { randomString } from './util/random'
 
 interface OAuthTokenOptions {
 	clientId: string
@@ -14,21 +15,25 @@ interface OAuthPollOptions {
 	onError: (err: Error) => void
 }
 
-declare global {
-	interface Window {
-		__setPcloudToken?: (token: string, locationid: string | null) => void
-	}
+interface PcloudTokenMessage {
+	type: 'pcloud-oauth-token'
+	token: string
+	locationid: string | null
+}
+
+function isPcloudTokenMessage(data: unknown): data is PcloudTokenMessage {
+	return (
+		typeof data === 'object' &&
+		data !== null &&
+		(data as { type?: unknown }).type === 'pcloud-oauth-token' &&
+		typeof (data as { token?: unknown }).token === 'string'
+	)
 }
 
 function buildAuthorizeUrl(query: Record<string, string>): string {
 	const url = new URL('https://my.pcloud.com/oauth2/authorize')
 	for (const [k, v] of Object.entries(query)) url.searchParams.set(k, v)
 	return url.toString()
-}
-
-function randomString(length: number): string {
-	const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
-	return Array.from({ length }, () => chars[Math.floor(Math.random() * chars.length)]).join('')
 }
 
 export function initOauthToken(options: OAuthTokenOptions): void {
@@ -42,12 +47,19 @@ export function initOauthToken(options: OAuthTokenOptions): void {
 		response_type: options.responseType ?? 'token',
 	})
 
-	window.open(oauthUrl, 'oauth', 'width=680,height=700')
+	const popupRef = window.open(oauthUrl, 'oauth', 'width=680,height=700')
+	const expectedOrigin = window.location.origin
 
-	window.__setPcloudToken = (token, locationid) => {
-		options.receiveToken(token, locationid)
-		delete window.__setPcloudToken
+	const handler = (event: MessageEvent): void => {
+		if (event.source !== popupRef) return
+		if (event.origin !== expectedOrigin) return
+		if (!isPcloudTokenMessage(event.data)) return
+
+		window.removeEventListener('message', handler)
+		options.receiveToken(event.data.token, event.data.locationid)
 	}
+
+	window.addEventListener('message', handler)
 }
 
 export function initOauthPollToken(options: OAuthPollOptions): void {
@@ -81,11 +93,13 @@ export function popup(): void {
 	const matchToken = location.hash.match(/access_token=([^&]+)/)
 	const matchCode = location.search.match(/code=([^&]+)/)
 	const locationIdMatch = location.hash.match(/locationid=([^&]+)/)
-	const locationid = locationIdMatch?.[1] ?? null
-	const token = matchToken?.[1] ?? matchCode?.[1] ?? null
+	const rawToken = matchToken?.[1] ?? matchCode?.[1]
+	const token = rawToken ? decodeURIComponent(rawToken) : null
+	const locationid = locationIdMatch?.[1] ? decodeURIComponent(locationIdMatch[1]) : null
 
-	if (token && window.opener?.__setPcloudToken) {
-		window.opener.__setPcloudToken(token, locationid)
+	if (token && window.opener) {
+		const message: PcloudTokenMessage = { type: 'pcloud-oauth-token', token, locationid }
+		window.opener.postMessage(message, window.location.origin)
 		window.close()
 	}
 }

@@ -1,3 +1,6 @@
+// Node-only. Do not import this module from browser bundles: it handles the
+// OAuth app secret, which must never reach client-side code.
+
 import { apiRequest } from './transport/request'
 import { assert } from './util/assert'
 
@@ -24,6 +27,11 @@ export async function getTokenFromCode(
 	clientId: string,
 	appSecret: string,
 ): Promise<{ access_token: string; locationid: number }> {
+	if (typeof window !== 'undefined') {
+		throw new Error(
+			'getTokenFromCode must not be called from a browser — it requires an app secret. Use oauth-browser for the browser flow.',
+		)
+	}
 	assert(code, '`code` is required')
 	assert(clientId, '`clientId` is required')
 	assert(appSecret, '`appSecret` is required')
@@ -32,7 +40,9 @@ export async function getTokenFromCode(
 		'eapi.pcloud.com',
 		'oauth2_token',
 		{
-			params: { client_id: clientId, client_secret: appSecret, code },
+			method: 'POST',
+			params: { client_id: clientId, code },
+			body: new URLSearchParams({ client_secret: appSecret }),
 		},
 	)
 }
