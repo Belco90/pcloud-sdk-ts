@@ -1,9 +1,9 @@
-import type { ClientContext } from "../client";
-import type { UserInfo } from "../types/api";
+import type { ClientContext } from '../client'
+import type { UserInfo } from '../types/api'
 
 export function login(ctx: ClientContext) {
-  return async (params: Record<string, string> = {}): Promise<UserInfo> => {
-    const res = await ctx.call<{ result: 0 } & UserInfo>("userinfo", params);
-    return res;
-  };
+	return async (params: Record<string, string> = {}): Promise<UserInfo> => {
+		const res = await ctx.call<{ result: 0 } & UserInfo>('userinfo', params)
+		return res
+	}
 }
