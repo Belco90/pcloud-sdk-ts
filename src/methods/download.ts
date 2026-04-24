@@ -13,7 +13,7 @@ export function download() {
 		try {
 			res = await fetch(url)
 		} catch (err) {
-			throw new TypeError(`download: fetch failed — ${(err as Error).message}`)
+			throw new TypeError(`download: fetch failed — ${(err as Error).message}`, { cause: err })
 		}
 
 		if (!res.ok || !res.body) {

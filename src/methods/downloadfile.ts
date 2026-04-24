@@ -22,7 +22,7 @@ export function downloadfile(ctx: ClientContext) {
 		try {
 			res = await fetch(url)
 		} catch (err) {
-			throw new TypeError(`downloadfile: fetch failed — ${(err as Error).message}`)
+			throw new TypeError(`downloadfile: fetch failed — ${(err as Error).message}`, { cause: err })
 		}
 
 		assert(res.ok && res.body !== null, `downloadfile: HTTP ${res.status} ${res.statusText}`)

@@ -40,6 +40,7 @@
 		"format": "oxfmt .",
 		"format:check": "oxfmt --check .",
 		"lint": "oxlint .",
+		"lint:fix": "oxlint --fix .",
 		"prepare": "simple-git-hooks",
 		"prepublishOnly": "pnpm type-check && pnpm test && pnpm build",
 		"test": "vitest run",

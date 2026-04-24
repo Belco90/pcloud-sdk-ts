@@ -31,7 +31,7 @@
 		/* Bundling generic library (not transpiling with TS) */
 		"module": "Preserve", // implied -> "moduleResolution": "bundler"
 		"noEmit": true,
-		"lib": ["ES2022", "DOM", "DOM.Iterable"],
+		"lib": ["ES2023", "DOM", "DOM.Iterable"],
 		"types": ["node"]
 	}
 }

@@ -16,7 +16,7 @@ describe('upload', () => {
 	it('calls onBegin before upload', async () => {
 		vi.stubGlobal('fetch', mockFetch(apiOk({ metadata: [FILE], checksums: [{ sha1: 'abc' }] })))
 		const client = createClient({ token: 'test-token' })
-		const onBegin = vi.fn()
+		const onBegin = vi.fn<() => void>()
 		const blob = new Blob(['test'], { type: 'text/plain' })
 		await client.upload(blob, 0, { onBegin })
 		expect(onBegin).toHaveBeenCalledOnce()
@@ -25,7 +25,7 @@ describe('upload', () => {
 	it('calls onFinish with result', async () => {
 		vi.stubGlobal('fetch', mockFetch(apiOk({ metadata: [FILE], checksums: [{ sha1: 'abc' }] })))
 		const client = createClient({ token: 'test-token' })
-		const onFinish = vi.fn()
+		const onFinish = vi.fn<(result: unknown) => void>()
 		const blob = new Blob(['test'], { type: 'text/plain' })
 		await client.upload(blob, 0, { onFinish })
 		expect(onFinish).toHaveBeenCalledOnce()
@@ -34,6 +34,6 @@ describe('upload', () => {
 	it('throws when source is missing', async () => {
 		const client = createClient({ token: 'test-token' })
 		// @ts-expect-error testing invalid input
-		await expect(client.upload(null, 0)).rejects.toThrow()
+		await expect(client.upload(null, 0)).rejects.toThrow('`source` is required')
 	})
 })
