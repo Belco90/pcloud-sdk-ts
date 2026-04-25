@@ -187,7 +187,8 @@ try {
 	if (err instanceof PcloudApiError) {
 		// pCloud returned a non-zero result code.
 		// `err.params` echoes the method's input params with secret keys
-		// (access_token, auth, client_secret, password) stripped, so it's safe to log.
+		// (access_token, auth, client_secret, password, code, request_id) stripped,
+		// so it's safe to log.
 		console.error(err.result, err.method, err.params)
 	} else if (err instanceof PcloudNetworkError) {
 		// fetch itself failed (timeout, DNS, etc.). The underlying fetch URL
@@ -201,6 +202,16 @@ try {
 ```
 
 The error classes can also be imported from `pcloud-sdk/errors` to avoid pulling in the full client.
+
+## Logging and proxies
+
+pCloud's HTTP/JSON API requires authentication parameters to travel as query-string values: `?access_token=`, `?auth=`, and — for `register` / `login` — `?password=`. The SDK keeps those values out of its own thrown errors (see [Error handling](#error-handling)), but anything sitting between your app and `*.pcloud.com` will see the full URL.
+
+If you operate or pass through any of the following, disable query-string capture (or scrub these keys) so tokens and passwords don't end up in stored logs:
+
+- reverse proxies / load balancers (nginx `$request`, Envoy access logs, ALB/CloudFront request logs)
+- APM and tracing (OpenTelemetry HTTP spans, Datadog/New Relic/Sentry breadcrumbs that record outbound URLs)
+- CI logs that print fetch URLs on failure
 
 ## Low-level `client.call()` — 160+ endpoints
 
