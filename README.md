@@ -308,11 +308,77 @@ client.upload(file, folderId, {
 
 ```bash
 pnpm install
-pnpm test       # vitest
+pnpm exec playwright install chromium   # one-time, for browser tests
+pnpm test       # vitest — runs all three projects (see below)
 pnpm build      # tsdown (ESM + .d.ts)
 ```
 
 The project uses tsdown for bundling, vitest for testing, oxlint for linting, and oxfmt for formatting.
+
+### Test layout
+
+`pnpm test` runs three Vitest projects:
+
+| Project            | Location                                 | Environment           | Mocking            |
+| ------------------ | ---------------------------------------- | --------------------- | ------------------ |
+| `unit`             | `test/unit/**/*.test.ts`                 | Node                  | `fetch` stub       |
+| `scenario-node`    | `examples/node/**/*.scenario.test.ts`    | Node                  | MSW (`msw/node`)   |
+| `scenario-browser` | `examples/browser/**/*.scenario.test.ts` | Chromium (Playwright) | MSW service worker |
+
+Filter to one project with the matching script:
+
+```bash
+pnpm test:unit
+pnpm test:scenario-node
+pnpm test:browser
+```
+
+The unit tests stub `fetch` directly to assert URL shapes and error handling; the scenario tests drive the SDK end-to-end against MSW handlers shared between Node and the browser.
+
+### Examples
+
+`examples/` holds runnable scenarios that double as integration tests. They share fixtures and MSW handlers so the same flows are exercised from both Node and the browser.
+
+```
+examples/
+  shared/      fixtures, MSW handler factory, scenario runner
+  node/        Vitest tests + a tsx-runnable manual script
+  browser/     Vitest browser-mode tests + a Vite + React demo page
+```
+
+#### Manual scenario — Node
+
+Run the same flows the `scenario-node` tests cover from the command line:
+
+```bash
+pnpm scenario:node          # MSW-mocked, no network
+pnpm scenario:node:real     # hits the real pCloud API (see env vars below)
+```
+
+For `--real` mode, set:
+
+| Var                 | Required | Purpose                                                  |
+| ------------------- | -------- | -------------------------------------------------------- |
+| `PCLOUD_TOKEN`      | yes      | OAuth access token (sent as `?access_token=`)            |
+| `PCLOUD_AUTH_TOKEN` | optional | Session token (sent as `?auth=`); skipped if unset       |
+| `PCLOUD_CLIENT_ID`  | optional | OAuth app client id; required for the code-exchange step |
+| `PCLOUD_APP_SECRET` | optional | OAuth app secret; required for the code-exchange step    |
+| `PCLOUD_CODE`       | optional | Authorization code; required for the code-exchange step  |
+
+Steps that lack their required env vars are skipped — you don't have to provide an app secret just to validate `listfolder`.
+
+#### Manual scenario — browser
+
+```bash
+pnpm scenario:browser         # MSW-mocked, no network
+pnpm scenario:browser:real    # hits the real pCloud API
+```
+
+Both commands open `http://localhost:5173`. A small React + Vite page with one button per flow (oauth `listfolder`, pcloud-mode `listfolder`, OAuth poll-token, error path).
+
+In MSW mode the inputs are pre-filled with fixture tokens and every flow works against the mocked handlers.
+
+In `:real` mode the worker is not started and requests go to the live API. Paste a real token into the input(s) — `?access_token=` for the oauth-mode button, `?auth=` for the pcloud-mode button. The OAuth poll-token and error-path buttons are disabled because they depend on MSW (the OAuth poll button uses a fake `client_id` and intercepts `window.open`; the error button overrides the worker handlers).
 
 ## License
 

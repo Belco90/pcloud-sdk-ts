@@ -32,5 +32,9 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
+      - name: Install Playwright Chromium
+        if: matrix.script == 'test'
+        run: pnpm exec playwright install chromium --with-deps
+
       - name: ${{ matrix.script }}
         run: pnpm ${{ matrix.script }}

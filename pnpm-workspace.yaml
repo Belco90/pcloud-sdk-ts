@@ -1,4 +1,5 @@
 onlyBuiltDependencies:
   - esbuild
+  - msw
   - simple-git-hooks
 useNodeVersion: 22.22.2
