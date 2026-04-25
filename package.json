@@ -44,6 +44,7 @@
 		"prepare": "simple-git-hooks",
 		"prepublishOnly": "pnpm type-check && pnpm test && pnpm build",
 		"scenario:browser": "vite --config examples/browser/vite.config.ts",
+		"scenario:browser:real": "VITE_PCLOUD_REAL=1 vite --config examples/browser/vite.config.ts",
 		"scenario:node": "tsx examples/node/manual.ts",
 		"scenario:node:real": "tsx examples/node/manual.ts --real",
 		"test": "vitest run",

@@ -364,10 +364,15 @@ Steps that lack their required env vars are skipped — you don't have to provid
 #### Manual scenario — browser
 
 ```bash
-pnpm scenario:browser        # opens http://localhost:5173
+pnpm scenario:browser         # MSW-mocked, no network
+pnpm scenario:browser:real    # hits the real pCloud API
 ```
 
-A small React + Vite page with one button per flow (oauth `listfolder`, pcloud-mode `listfolder`, OAuth poll-token, error path). All requests are intercepted by the MSW service worker — no real network traffic.
+Both commands open `http://localhost:5173`. A small React + Vite page with one button per flow (oauth `listfolder`, pcloud-mode `listfolder`, OAuth poll-token, error path).
+
+In MSW mode the inputs are pre-filled with fixture tokens and every flow works against the mocked handlers.
+
+In `:real` mode the worker is not started and requests go to the live API. Paste a real token into the input(s) — `?access_token=` for the oauth-mode button, `?auth=` for the pcloud-mode button. The OAuth poll-token and error-path buttons are disabled because they depend on MSW (the OAuth poll button uses a fake `client_id` and intercepts `window.open`; the error button overrides the worker handlers).
 
 ## License
 

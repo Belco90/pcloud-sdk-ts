@@ -4,10 +4,14 @@ import { createRoot } from 'react-dom/client'
 import { App } from './App'
 import { worker } from './worker'
 
-await worker.start({ onUnhandledRequest: 'bypass', quiet: true })
+const realMode = import.meta.env.VITE_PCLOUD_REAL === '1'
+
+if (!realMode) {
+	await worker.start({ onUnhandledRequest: 'bypass', quiet: true })
+}
 
 createRoot(document.querySelector<HTMLElement>('#root')!).render(
 	<StrictMode>
-		<App />
+		<App realMode={realMode} />
 	</StrictMode>,
 )

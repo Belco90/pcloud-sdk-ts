@@ -7,17 +7,23 @@ import { worker } from './worker'
 
 type LogEntry = { label: string; body: string }
 
+interface AppProps {
+	realMode: boolean
+}
+
 function format(payload: unknown): string {
 	const body = payload instanceof Error ? `${payload.name}: ${payload.message}` : payload
 	return typeof body === 'string' ? body : JSON.stringify(body, null, 2)
 }
 
-export function App(): React.JSX.Element {
-	const [oauthToken, setOauthToken] = useState('oauth-test-access-token')
-	const [pcloudToken, setPcloudToken] = useState('pcloud-test-token')
+export function App({ realMode }: AppProps): React.JSX.Element {
+	const [oauthToken, setOauthToken] = useState(realMode ? '' : 'oauth-test-access-token')
+	const [pcloudToken, setPcloudToken] = useState(realMode ? '' : 'pcloud-test-token')
 	const [log, setLog] = useState<LogEntry>({
 		label: 'idle',
-		body: 'MSW worker started. Click a button above.',
+		body: realMode
+			? 'Real mode: requests will hit the live pCloud API. Paste your token(s) above and pick an action.'
+			: 'MSW worker started. Click a button above.',
 	})
 
 	function run(label: string, fn: () => Promise<unknown>): () => void {
@@ -82,8 +88,17 @@ export function App(): React.JSX.Element {
 		<>
 			<h1>pcloud-sdk-ts — browser scenario</h1>
 			<p>
-				Requests are intercepted by an MSW service worker and respond with the fixture data from{' '}
-				<code>examples/shared/handlers.ts</code>.
+				{realMode ? (
+					<>
+						<strong>Real mode</strong> — requests are sent to the live pCloud API. The MSW worker is
+						not started. The OAuth poll and error-path actions require MSW and are disabled.
+					</>
+				) : (
+					<>
+						Requests are intercepted by an MSW service worker and respond with the fixture data from{' '}
+						<code>examples/shared/handlers.ts</code>.
+					</>
+				)}
 			</p>
 
 			<fieldset>
@@ -106,10 +121,10 @@ export function App(): React.JSX.Element {
 				<button type="button" onClick={listPcloud}>
 					List folder (pcloud mode)
 				</button>
-				<button type="button" onClick={oauthPoll}>
+				<button type="button" onClick={oauthPoll} disabled={realMode}>
 					OAuth login (poll flow)
 				</button>
-				<button type="button" onClick={triggerError}>
+				<button type="button" onClick={triggerError} disabled={realMode}>
 					Trigger error path
 				</button>
 			</fieldset>
