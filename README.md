@@ -186,9 +186,8 @@ try {
 } catch (err) {
 	if (err instanceof PcloudApiError) {
 		// pCloud returned a non-zero result code.
-		// `err.params` echoes the method's input params with secret keys
-		// (access_token, auth, client_secret, password, code, request_id) stripped,
-		// so it's safe to log.
+		// `err.params` echoes the method's input params with
+		// known secret/sensitive keys stripped, so it's safe to log.
 		console.error(err.result, err.method, err.params)
 	} else if (err instanceof PcloudNetworkError) {
 		// fetch itself failed (timeout, DNS, etc.). The underlying fetch URL
