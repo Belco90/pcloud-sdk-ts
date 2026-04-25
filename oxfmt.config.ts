@@ -18,5 +18,12 @@ export default defineConfig({
 			'unknown',
 		],
 	},
-	ignorePatterns: ['dist', 'node_modules', 'package-lock.json', 'pnpm-lock.yaml', '.gitignore'],
+	ignorePatterns: [
+		'dist',
+		'node_modules',
+		'package-lock.json',
+		'pnpm-lock.yaml',
+		'.gitignore',
+		'**/mockServiceWorker.js',
+	],
 })

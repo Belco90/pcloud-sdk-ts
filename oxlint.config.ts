@@ -11,7 +11,7 @@ export default defineConfig({
 		'no-console': 'warn',
 	},
 	env: { es2022: true },
-	ignorePatterns: ['dist', 'coverage', 'node_modules'],
+	ignorePatterns: ['dist', 'coverage', 'node_modules', '**/mockServiceWorker.js'],
 	options: {
 		denyWarnings: true,
 		reportUnusedDisableDirectives: 'warn',
