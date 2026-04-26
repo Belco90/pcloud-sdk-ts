@@ -8,11 +8,16 @@
 		"sdk",
 		"typescript"
 	],
+	"homepage": "https://github.com/Belco90/pcloud-kit#readme",
+	"bugs": "https://github.com/Belco90/pcloud-kit/issues",
 	"license": "MIT",
+	"author": "Mario Beltrán (https://belco.dev)",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/Belco90/pcloud-kit.git"
+	},
 	"files": [
-		"dist",
-		"README.md",
-		"LICENSE"
+		"dist"
 	],
 	"type": "module",
 	"sideEffects": false,
