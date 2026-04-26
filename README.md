@@ -1,6 +1,6 @@
 # pcloud-kit
 
-Unofficial, zero-dependency, type-safe pCloud SDK for modern JavaScript runtimes.
+Unofficial, zero-dependency, type-safe [pCloud](https://www.pcloud.com) SDK for modern JavaScript runtimes.
 
 A modern alternative to [`pcloud-sdk-js`](https://www.npmjs.com/package/pcloud-sdk-js) with full TypeScript support, and no runtime dependencies.
 
