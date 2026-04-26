@@ -25,5 +25,6 @@ export default defineConfig({
 		'pnpm-lock.yaml',
 		'.gitignore',
 		'**/mockServiceWorker.js',
+		'CHANGELOG.md',
 	],
 })
