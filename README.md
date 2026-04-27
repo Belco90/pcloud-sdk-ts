@@ -127,6 +127,7 @@ These are fully typed and bound directly on the client:
 | `renamefile`       | `(fileid: number, toname: string)`                                                               | `Promise<FileMetadata>`                                     |
 | `renamefolder`     | `(folderid: number, toname: string)`                                                             | `Promise<FolderMetadata>`                                   |
 | `getfilelink`      | `(fileid: number)`                                                                               | `Promise<string>`                                           |
+| `getthumblink`     | `(fileid: number, options?: ThumbOptions)`                                                       | `Promise<string>`                                           |
 | `sharefolder`      | `(folderid: number, mail: string, permissions: 'view' \| 'edit', message?: string)`              | `Promise<ShareInfo>`                                        |
 | `appshare`         | `(folderid: number, userid: number, clientid: string)`                                           | `Promise<AppShareInfo>`                                     |
 | `login`            | `(params?: Record<string, string>)`                                                              | `Promise<UserInfo>`                                         |

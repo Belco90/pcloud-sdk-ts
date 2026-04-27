@@ -16,6 +16,7 @@ export function getthumbsfileids(ctx: ClientContext) {
 
 		const thumbType = options.thumbType ?? 'auto'
 		const size = options.size ?? '32x32'
+		const crop = options.crop ?? true
 
 		const text = await ctx.call<string>(
 			'getthumbs',
@@ -23,7 +24,7 @@ export function getthumbsfileids(ctx: ClientContext) {
 				fileids: fileids.join(','),
 				type: thumbType,
 				size,
-				crop: 1,
+				crop: crop ? 1 : 0,
 			},
 			{ responseType: 'text' },
 		)

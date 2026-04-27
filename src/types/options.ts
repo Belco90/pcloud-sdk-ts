@@ -38,6 +38,7 @@ export interface RemoteUploadOptions {
 export interface ThumbOptions {
 	thumbType?: 'jpg' | 'png' | 'auto'
 	size?: '32x32' | '120x120'
+	crop?: boolean
 }
 
 export interface ListFolderOptions {
